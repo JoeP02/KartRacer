@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "OnlineSubsystem.h"
+#include "Interfaces/OnlineSessionInterface.h"
+#include "OnlineSessionSettings.h"
 #include "KartRacingOnlineSubsystem.generated.h"
 
 /**
@@ -12,6 +14,8 @@
  */
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnKartLoginCompleted, int32, LocalUserNum, bool, bWasSuccessful, const FString&, Error);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnKartStartCreateSession);
 
 UCLASS()
 class KARTRACER_API UKartRacingOnlineSubsystem : public UGameInstanceSubsystem
@@ -24,13 +28,18 @@ public:
 	UFUNCTION(BlueprintCallable) void Login();
 	UFUNCTION(BlueprintCallable, BlueprintPure) FString GetPlayerUsername();
 
+	UFUNCTION(BlueprintCallable) void CreateOnlineSession();
+
 	UPROPERTY(BlueprintAssignable, Category="Kart Online System Delegates") FOnKartLoginCompleted OnKartLoginCompleted;
+	UPROPERTY(BlueprintAssignable, Category="Kart Online System Delegates") FOnKartStartCreateSession OnKartStartCreateSession;
 
 protected:
 
 private:
 	IOnlineSubsystem* OnlineSubsystem;
 	IOnlineIdentityPtr Identity;
+	IOnlineSessionPtr SessionsPtr;
 
 	void OnLoginCompletes(int32 LocalUserNum, bool bWasSuccessful, const FUniqueNetId& UserId, const FString& Error);
+	void OnCreateSessionComplete(FName SessionName, bool bWasSuccessful);
 };

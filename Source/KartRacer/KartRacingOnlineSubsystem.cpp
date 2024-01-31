@@ -6,6 +6,8 @@
 
 #include "Kismet/KismetSystemLibrary.h"
 
+const static FName SERVER_NAME_SETTINGS_KEY = TEXT("ServerName");
+
 void UKartRacingOnlineSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
@@ -15,6 +17,7 @@ void UKartRacingOnlineSubsystem::Initialize(FSubsystemCollectionBase& Collection
 	{
 		OnlineSubsystem = Online::GetSubsystem(World);
 		Identity = OnlineSubsystem->GetIdentityInterface();
+		SessionsPtr = OnlineSubsystem->GetSessionInterface();
 	}
 }
 
@@ -35,6 +38,27 @@ FString UKartRacingOnlineSubsystem::GetPlayerUsername()
 	return Identity->GetPlayerNickname(0);
 }
 
+void UKartRacingOnlineSubsystem::CreateOnlineSession()
+{
+	OnKartStartCreateSession.Broadcast();
+	
+	FOnlineSessionSettings SessionSettings;
+	SessionSettings.NumPublicConnections = 12;
+	SessionSettings.bShouldAdvertise = true;
+	SessionSettings.bAllowJoinInProgress = true;
+	SessionSettings.bAllowJoinViaPresence = true;
+	SessionSettings.bUsesPresence = true;
+	SessionSettings.bUseLobbiesIfAvailable = true;
+	SessionSettings.bIsDedicated = false;
+	SessionSettings.bAllowInvites = true;
+	SessionSettings.Set(SERVER_NAME_SETTINGS_KEY, GetPlayerUsername(), EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
+	SessionSettings.Set(SEARCH_KEYWORDS, FString("KrazyKartsLobby"), EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
+
+	SessionsPtr->OnCreateSessionCompleteDelegates.AddUObject(this, &UKartRacingOnlineSubsystem::OnCreateSessionComplete);
+	
+	SessionsPtr->CreateSession(0, FName(*GetPlayerUsername()), SessionSettings);
+}
+
 void UKartRacingOnlineSubsystem::OnLoginCompletes(int32 LocalUserNum, bool bWasSuccessful, const FUniqueNetId& UserId,
                                                   const FString& Error)
 {
@@ -47,4 +71,12 @@ void UKartRacingOnlineSubsystem::OnLoginCompletes(int32 LocalUserNum, bool bWasS
 	OnKartLoginCompleted.Broadcast(LocalUserNum, bWasSuccessful, Error);
 	
 	Identity->ClearOnLoginCompleteDelegates(LocalUserNum, this);
+}
+
+void UKartRacingOnlineSubsystem::OnCreateSessionComplete(FName SessionName, bool bWasSuccessful)
+{
+	if (bWasSuccessful)
+	{
+		GEngine->AddOnScreenDebugMessage(0, 5, FColor::Cyan, "Created Session: " + SessionName.ToString());
+	}
 }
