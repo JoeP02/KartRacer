@@ -22,10 +22,6 @@
 			]
 		},
 		{
-			"Name": "ChaosVehiclesPlugin",
-			"Enabled": true
-		},
-		{
 			"Name": "OnlineSubsystemEOS",
 			"Enabled": true
 		},
@@ -35,7 +31,7 @@
 		},
 		{
 			"Name": "FlatNodes",
-			"Enabled": true,
+			"Enabled": false,
 			"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/content/b719437f3fb54c259b34227363df8cab"
 		}
 	]

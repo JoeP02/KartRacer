@@ -38,12 +38,13 @@ FString UKartRacingOnlineSubsystem::GetPlayerUsername()
 	return Identity->GetPlayerNickname(0);
 }
 
-void UKartRacingOnlineSubsystem::CreateOnlineSession()
+void UKartRacingOnlineSubsystem::CreateOnlineSession(int MaxNumOfPlayers, bool bLAN)
 {
 	OnKartStartCreateSession.Broadcast();
 	
 	FOnlineSessionSettings SessionSettings;
-	SessionSettings.NumPublicConnections = 12;
+	SessionSettings.bIsLANMatch = bLAN;
+	SessionSettings.NumPublicConnections = MaxNumOfPlayers;
 	SessionSettings.bShouldAdvertise = true;
 	SessionSettings.bAllowJoinInProgress = true;
 	SessionSettings.bAllowJoinViaPresence = true;
@@ -57,6 +58,13 @@ void UKartRacingOnlineSubsystem::CreateOnlineSession()
 	SessionsPtr->OnCreateSessionCompleteDelegates.AddUObject(this, &UKartRacingOnlineSubsystem::OnCreateSessionComplete);
 	
 	SessionsPtr->CreateSession(0, FName(*GetPlayerUsername()), SessionSettings);
+}
+
+void UKartRacingOnlineSubsystem::FindOnlineSession()
+{
+	OnKartStartFindSession.Broadcast();
+
+	SessionsPtr->FindSessions(Identity->GetUniquePlayerId(0), SearchSettings);
 }
 
 void UKartRacingOnlineSubsystem::OnLoginCompletes(int32 LocalUserNum, bool bWasSuccessful, const FUniqueNetId& UserId,
