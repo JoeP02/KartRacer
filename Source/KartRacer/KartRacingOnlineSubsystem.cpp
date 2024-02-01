@@ -79,4 +79,8 @@ void UKartRacingOnlineSubsystem::OnCreateSessionComplete(FName SessionName, bool
 	{
 		GEngine->AddOnScreenDebugMessage(0, 5, FColor::Cyan, "Created Session: " + SessionName.ToString());
 	}
+
+	OnKartCreateSessionComplete.Broadcast(SessionName, bWasSuccessful);
+
+	SessionsPtr->ClearOnCreateSessionCompleteDelegates(this);
 }

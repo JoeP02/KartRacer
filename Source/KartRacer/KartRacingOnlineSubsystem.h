@@ -16,6 +16,7 @@
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnKartLoginCompleted, int32, LocalUserNum, bool, bWasSuccessful, const FString&, Error);
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnKartStartCreateSession);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnKartCreateSessionComplete, FName, SessionName, bool, bWasSuccessful);
 
 UCLASS()
 class KARTRACER_API UKartRacingOnlineSubsystem : public UGameInstanceSubsystem
@@ -32,6 +33,7 @@ public:
 
 	UPROPERTY(BlueprintAssignable, Category="Kart Online System Delegates") FOnKartLoginCompleted OnKartLoginCompleted;
 	UPROPERTY(BlueprintAssignable, Category="Kart Online System Delegates") FOnKartStartCreateSession OnKartStartCreateSession;
+	UPROPERTY(BlueprintAssignable, Category="Kart Online System Delegates") FOnKartCreateSessionComplete OnKartCreateSessionComplete;
 
 protected:
 
