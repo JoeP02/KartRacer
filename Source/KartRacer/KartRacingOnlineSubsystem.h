@@ -19,6 +19,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnKartStartCreateSession);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnKartCreateSessionComplete, FName, SessionName, bool, bWasSuccessful);
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnKartStartFindSession);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnKartFindSessionsComplete, bool, bWasSuccessful, TArray<FOnlineSessionSearchResult>, SessionResults);
 
 UCLASS()
 class KARTRACER_API UKartRacingOnlineSubsystem : public UGameInstanceSubsystem
@@ -39,6 +40,7 @@ public:
 	UPROPERTY(BlueprintAssignable, Category="Kart Online System Delegates") FOnKartStartCreateSession OnKartStartCreateSession;
 	UPROPERTY(BlueprintAssignable, Category="Kart Online System Delegates") FOnKartCreateSessionComplete OnKartCreateSessionComplete;
 	UPROPERTY(BlueprintAssignable, Category="Kart Online System Delegates") FOnKartStartFindSession OnKartStartFindSession;
+	UPROPERTY(BlueprintAssignable, Category="Kart Online System Delegates") FOnKartFindSessionsComplete OnKartFindSessionsComplete;
 
 protected:
 
@@ -47,8 +49,9 @@ private:
 	IOnlineIdentityPtr Identity;
 	IOnlineSessionPtr SessionsPtr;
 
-	TSharedRef<FOnlineSessionSearch> SearchSettings;
+	TSharedPtr<FOnlineSessionSearch> SearchSettings;
 
 	void OnLoginCompletes(int32 LocalUserNum, bool bWasSuccessful, const FUniqueNetId& UserId, const FString& Error);
 	void OnCreateSessionComplete(FName SessionName, bool bWasSuccessful);
+	void OnFindSessionsComplete(bool bWasSuccessful);
 };

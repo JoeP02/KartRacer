@@ -64,7 +64,9 @@ void UKartRacingOnlineSubsystem::FindOnlineSession()
 {
 	OnKartStartFindSession.Broadcast();
 
-	SessionsPtr->FindSessions(Identity->GetUniquePlayerId(0), SearchSettings);
+	SessionsPtr->OnFindSessionsCompleteDelegates.AddUObject(this, &UKartRacingOnlineSubsystem::OnFindSessionsComplete);
+
+	SessionsPtr->FindSessions(0, SearchSettings.ToSharedRef());
 }
 
 void UKartRacingOnlineSubsystem::OnLoginCompletes(int32 LocalUserNum, bool bWasSuccessful, const FUniqueNetId& UserId,
@@ -91,4 +93,16 @@ void UKartRacingOnlineSubsystem::OnCreateSessionComplete(FName SessionName, bool
 	OnKartCreateSessionComplete.Broadcast(SessionName, bWasSuccessful);
 
 	SessionsPtr->ClearOnCreateSessionCompleteDelegates(this);
+}
+
+void UKartRacingOnlineSubsystem::OnFindSessionsComplete(bool bWasSuccessful)
+{
+	if (bWasSuccessful)
+	{
+		GEngine->AddOnScreenDebugMessage(0, 5, FColor::Cyan, "Found Sessions");
+	}
+
+	
+
+	SessionsPtr->ClearOnFindSessionsCompleteDelegates(this);
 }
