@@ -19,7 +19,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnKartStartCreateSession);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnKartCreateSessionComplete, FName, SessionName, bool, bWasSuccessful);
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnKartStartFindSession);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParams(FOnKartFindSessionsComplete, bool, bWasSuccessful);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnKartFindSessionsComplete, bool, bWasSuccessful);
 
 UCLASS()
 class KARTRACER_API UKartRacingOnlineSubsystem : public UGameInstanceSubsystem

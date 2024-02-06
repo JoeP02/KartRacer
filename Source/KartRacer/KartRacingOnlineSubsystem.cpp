@@ -3,6 +3,7 @@
 
 #include "KartRacingOnlineSubsystem.h"
 #include "OnlineSubsystemUtils.h"
+#include "GenericPlatform/GenericPlatformDriver.h"
 
 #include "Kismet/KismetSystemLibrary.h"
 
@@ -66,7 +67,16 @@ void UKartRacingOnlineSubsystem::FindOnlineSession()
 
 	SessionsPtr->OnFindSessionsCompleteDelegates.AddUObject(this, &UKartRacingOnlineSubsystem::OnFindSessionsComplete);
 
-	SessionsPtr->FindSessions(0, SearchSettings.ToSharedRef());
+	SearchSettings = MakeShareable(new FOnlineSessionSearch());
+	if (SearchSettings)
+	{
+		SearchSettings->MaxSearchResults = 100;
+		SearchSettings->QuerySettings.Set(SEARCH_PRESENCE, true, EOnlineComparisonOp::Equals);
+		SearchSettings->QuerySettings.Set(SEARCH_KEYWORDS, FString("KrazyKartsLobby"), EOnlineComparisonOp::Equals);
+		SearchSettings->QuerySettings.Set(SEARCH_LOBBIES, true, EOnlineComparisonOp::Equals);
+
+		SessionsPtr->FindSessions(0, SearchSettings.ToSharedRef());
+	}
 }
 
 void UKartRacingOnlineSubsystem::OnLoginCompletes(int32 LocalUserNum, bool bWasSuccessful, const FUniqueNetId& UserId,
@@ -102,7 +112,7 @@ void UKartRacingOnlineSubsystem::OnFindSessionsComplete(bool bWasSuccessful)
 		GEngine->AddOnScreenDebugMessage(0, 5, FColor::Cyan, "Found Sessions");
 	}
 
-	
+	OnKartFindSessionsComplete.Broadcast(bWasSuccessful);
 
 	SessionsPtr->ClearOnFindSessionsCompleteDelegates(this);
 }
