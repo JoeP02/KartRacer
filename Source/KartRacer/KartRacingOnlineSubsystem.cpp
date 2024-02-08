@@ -112,7 +112,7 @@ void UKartRacingOnlineSubsystem::OnFindSessionsComplete(bool bWasSuccessful)
 		GEngine->AddOnScreenDebugMessage(0, 5, FColor::Cyan, "Found Sessions");
 	}
 
-	OnKartFindSessionsComplete.Broadcast(bWasSuccessful);
+	OnKartFindSessionsComplete.Broadcast(bWasSuccessful, SearchSettings->SearchResults[0].GetSessionIdStr());
 
 	SessionsPtr->ClearOnFindSessionsCompleteDelegates(this);
 }

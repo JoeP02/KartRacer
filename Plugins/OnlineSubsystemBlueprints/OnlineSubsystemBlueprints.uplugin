@@ -1,0 +1,33 @@
+{
+	"FileVersion": 3,
+	"Version": 0,
+	"VersionName": "2023.09.08-5.2-f2d11aa8",
+	"FriendlyName": "Online Subsystem Blueprints",
+	"Description": "Access Unreal Engine's online subsystems from blueprints! No C++ necessary.",
+	"Category": "Networking",
+	"CreatedBy": "Redpoint Games",
+	"CreatedByURL": "https://redpoint.games/",
+	"DocsURL": "https://redpointgames.gitlab.io/online-subsystem-blueprints/",
+	"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/product/f9b4f0637a8f4993ac05a4481fdfd3e0",
+	"SupportURL": "https://redpoint.games/support/",
+	"EngineVersion": "5.2.0",
+	"CanContainContent": true,
+	"Installed": true,
+	"Modules": [
+		{
+			"Name": "OnlineSubsystemBlueprints",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		}
+	],
+	"Plugins": [
+		{
+			"Name": "OnlineSubsystem",
+			"Enabled": true
+		},
+		{
+			"Name": "OnlineSubsystemUtils",
+			"Enabled": true
+		}
+	]
+}

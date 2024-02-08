@@ -22,17 +22,26 @@
 			]
 		},
 		{
-			"Name": "OnlineSubsystemEOS",
-			"Enabled": true
-		},
-		{
-			"Name": "EOSShared",
-			"Enabled": true
-		},
-		{
 			"Name": "FlatNodes",
 			"Enabled": false,
 			"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/content/b719437f3fb54c259b34227363df8cab"
+		},
+		{
+			"Name": "OnlineSubsystemBlueprints",
+			"Enabled": true,
+			"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/product/f9b4f0637a8f4993ac05a4481fdfd3e0"
+		},
+		{
+			"Name": "OnlineSubsystemGooglePlay",
+			"Enabled": false,
+			"SupportedTargetPlatforms": [
+				"Android"
+			]
+		},
+		{
+			"Name": "OnlineSubsystemRedpointEOS",
+			"Enabled": true,
+			"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/product/2c92594ce5aa416c8bfbd79275389e3b"
 		}
 	]
 }

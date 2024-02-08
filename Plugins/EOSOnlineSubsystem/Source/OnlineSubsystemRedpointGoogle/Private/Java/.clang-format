@@ -1,0 +1,15 @@
+---
+BasedOnStyle: Microsoft
+---
+Language: Java
+ColumnLimit: 120
+AllowShortLambdasOnASingleLine: None
+AccessModifierOffset: -4
+BinPackArguments: false
+BinPackParameters: false
+AllowAllArgumentsOnNextLine: false
+AllowAllConstructorInitializersOnNextLine: false
+AllowAllParametersOfDeclarationOnNextLine: false
+AlignAfterOpenBracket: AlwaysBreak
+BreakConstructorInitializers: BeforeComma
+--- 
