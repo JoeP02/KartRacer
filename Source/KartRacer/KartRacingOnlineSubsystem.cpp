@@ -6,6 +6,7 @@
 #include "GenericPlatform/GenericPlatformDriver.h"
 
 #include "Kismet/KismetSystemLibrary.h"
+#include "Online/OnlineSessionNames.h"
 
 const static FName SERVER_NAME_SETTINGS_KEY = TEXT("ServerName");
 
