@@ -53,7 +53,7 @@ void UKartRacingOnlineSubsystem::CreateOnlineSession(int MaxNumOfPlayers, bool b
 	SessionSettings.bUseLobbiesIfAvailable = true;
 	SessionSettings.bIsDedicated = false;
 	SessionSettings.bAllowInvites = true;
-	SessionSettings.Set(SERVER_NAME_SETTINGS_KEY, GetPlayerUsername(), EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
+	SessionSettings.Set(SERVER_NAME_SETTINGS_KEY, NAME_GameSession, EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
 	SessionSettings.Set(SEARCH_KEYWORDS, FString("KrazyKartsLobby"), EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
 
 	SessionsPtr->OnCreateSessionCompleteDelegates.AddUObject(this, &UKartRacingOnlineSubsystem::OnCreateSessionComplete);
@@ -79,13 +79,19 @@ void UKartRacingOnlineSubsystem::FindOnlineSession()
 	}
 }
 
+void UKartRacingOnlineSubsystem::LeaveSession()
+{
+	SessionsPtr->OnDestroySessionCompleteDelegates.AddUObject(this, &UKartRacingOnlineSubsystem::OnLeaveSessionComplete);
+	SessionsPtr->DestroySession(NAME_GameSession);
+}
+
 void UKartRacingOnlineSubsystem::JoinSession(FOnlineSessionSearchResult& SessionToJoin)
 {
 	GEngine->AddOnScreenDebugMessage(0, 5.f, FColor::Cyan, TEXT("Join Session Called"));
 
 	SessionsPtr->OnJoinSessionCompleteDelegates.AddUObject(this, &UKartRacingOnlineSubsystem::OnJoinSessionComplete);
 	
-	SessionsPtr->JoinSession(0, FName(SessionToJoin.Session.OwningUserName), SessionToJoin);
+	SessionsPtr->JoinSession(0, NAME_GameSession, SessionToJoin);
 }
 
 void UKartRacingOnlineSubsystem::OnLoginCompletes(int32 LocalUserNum, bool bWasSuccessful, const FUniqueNetId& UserId,
@@ -119,8 +125,6 @@ void UKartRacingOnlineSubsystem::OnFindSessionsComplete(bool bWasSuccessful)
 	if (bWasSuccessful)
 	{
 		GEngine->AddOnScreenDebugMessage(0, 5, FColor::Cyan, "Found Sessions");
-
-		
 	}
 
 	OnKartFindSessionsComplete.Broadcast(bWasSuccessful);
@@ -143,4 +147,14 @@ void UKartRacingOnlineSubsystem::OnJoinSessionComplete(FName SessionName, EOnJoi
 	if (!ensure(PlayerController != nullptr)) return;
 	
 	PlayerController->ClientTravel(Address, ETravelType::TRAVEL_Absolute);
+}
+
+void UKartRacingOnlineSubsystem::OnLeaveSessionComplete(FName SessionName, bool bWasSuccessful)
+{
+	if (bWasSuccessful)
+	{
+		GEngine->AddOnScreenDebugMessage(0, 5.f, FColor::Cyan, "Left Session");
+	
+		GetWorld()->GetFirstPlayerController()->ClientTravel("/Game/Maps/MainMenu", TRAVEL_Absolute);
+	}
 }
