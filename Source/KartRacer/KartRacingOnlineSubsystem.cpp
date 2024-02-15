@@ -81,6 +81,10 @@ void UKartRacingOnlineSubsystem::FindOnlineSession()
 
 void UKartRacingOnlineSubsystem::JoinSession(FOnlineSessionSearchResult& SessionToJoin)
 {
+	GEngine->AddOnScreenDebugMessage(0, 5.f, FColor::Cyan, TEXT("Join Session Called"));
+
+	SessionsPtr->OnJoinSessionCompleteDelegates.AddUObject(this, &UKartRacingOnlineSubsystem::OnJoinSessionComplete);
+	
 	SessionsPtr->JoinSession(0, FName(SessionToJoin.Session.OwningUserName), SessionToJoin);
 }
 
@@ -122,4 +126,21 @@ void UKartRacingOnlineSubsystem::OnFindSessionsComplete(bool bWasSuccessful)
 	OnKartFindSessionsComplete.Broadcast(bWasSuccessful);
 
 	SessionsPtr->ClearOnFindSessionsCompleteDelegates(this);
+}
+
+void UKartRacingOnlineSubsystem::OnJoinSessionComplete(FName SessionName, EOnJoinSessionCompleteResult::Type Result)
+{
+	FString Address;
+	if(!SessionsPtr->GetResolvedConnectString(SessionName, Address))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Could Not Get Connect String"));
+		return;
+	}
+	
+	GEngine->AddOnScreenDebugMessage(0, 2, FColor::Green, FString::Printf(TEXT("Joining %s"), *Address));
+	
+	APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
+	if (!ensure(PlayerController != nullptr)) return;
+	
+	PlayerController->ClientTravel(Address, ETravelType::TRAVEL_Absolute);
 }

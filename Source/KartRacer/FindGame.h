@@ -16,7 +16,11 @@ class KARTRACER_API UFindGame : public UUserWidget
 	GENERATED_BODY()
 
 public:
+	UFindGame(const FObjectInitializer& Object);
+	
 	UPROPERTY(meta=(BindWidget)) UScrollBox* SessionScrollBox;
 
-	UFUNCTION() void RefreshServerList();
+	UFUNCTION(BlueprintCallable) void RefreshServerList();
+
+	UPROPERTY(EditAnywhere) TSubclassOf<UUserWidget> ServerRowClass;
 };

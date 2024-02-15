@@ -35,7 +35,7 @@ public:
 	UFUNCTION(BlueprintCallable) void CreateOnlineSession(int MaxNumOfPlayers, bool bLAN);
 
 	UFUNCTION(BlueprintCallable) void FindOnlineSession();
-
+	
 	void JoinSession(FOnlineSessionSearchResult& SessionToJoin);
 
 	UPROPERTY(BlueprintAssignable, Category="Kart Online System Delegates") FOnKartLoginCompleted OnKartLoginCompleted;
@@ -56,4 +56,5 @@ private:
 	void OnLoginCompletes(int32 LocalUserNum, bool bWasSuccessful, const FUniqueNetId& UserId, const FString& Error);
 	void OnCreateSessionComplete(FName SessionName, bool bWasSuccessful);
 	void OnFindSessionsComplete(bool bWasSuccessful);
+	void OnJoinSessionComplete(FName SessionName, EOnJoinSessionCompleteResult::Type Result);
 };
