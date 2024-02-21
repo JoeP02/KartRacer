@@ -3,6 +3,7 @@
 
 #include "KartRacingOnlineSubsystem.h"
 #include "OnlineSubsystemUtils.h"
+#include "OnlineSessionSettings.h"
 #include "GenericPlatform/GenericPlatformDriver.h"
 
 #include "Kismet/KismetSystemLibrary.h"
@@ -53,8 +54,8 @@ void UKartRacingOnlineSubsystem::CreateOnlineSession(int MaxNumOfPlayers, bool b
 	SessionSettings.bUseLobbiesIfAvailable = true;
 	SessionSettings.bIsDedicated = false;
 	SessionSettings.bAllowInvites = true;
-	SessionSettings.Set(SERVER_NAME_SETTINGS_KEY, NAME_GameSession, EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
-	SessionSettings.Set(SEARCH_KEYWORDS, FString("KrazyKartsLobby"), EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
+	// SessionSettings.Set(SERVER_NAME_SETTINGS_KEY, NAME_GameSession, EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
+	// SessionSettings.Set(SEARCH_KEYWORDS, FString("KrazyKartsLobby"), EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
 
 	SessionsPtr->OnCreateSessionCompleteDelegates.AddUObject(this, &UKartRacingOnlineSubsystem::OnCreateSessionComplete);
 	
