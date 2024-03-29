@@ -31,7 +31,9 @@ class KARTRACER_API UKartRacingOnlineSubsystem : public UGameInstanceSubsystem
 public:
 	void Initialize(FSubsystemCollectionBase& Collection) override;
 	
-	UFUNCTION(BlueprintCallable) void Login();
+	UFUNCTION(BlueprintCallable) void PortalLogin();
+	UFUNCTION(BlueprintCallable) void PersistantLogin();
+	UFUNCTION(BlueprintCallable) void Logout();
 	UFUNCTION(BlueprintCallable, BlueprintPure) FString GetPlayerUsername();
 
 	UFUNCTION(BlueprintCallable) void CreateOnlineSession(int MaxNumOfPlayers, bool bLAN);
@@ -58,7 +60,9 @@ private:
 	IOnlineIdentityPtr Identity;
 	IOnlineSessionPtr SessionsPtr;
 
-	void OnLoginCompletes(int32 LocalUserNum, bool bWasSuccessful, const FUniqueNetId& UserId, const FString& Error);
+	void OnPortalLoginCompletes(int32 LocalUserNum, bool bWasSuccessful, const FUniqueNetId& UserId, const FString& Error);
+	void OnPersistantLoginCompletes(int32 LocalUserNum, bool bWasSuccessful, const FUniqueNetId& UserId, const FString& Error);
+	void OnLogoutCompletes(int32 LocalUserNum, bool bWasSuccessful);
 	void OnCreateSessionComplete(FName SessionName, bool bWasSuccessful);
 	void OnFindSessionsComplete(bool bWasSuccessful);
 	void OnJoinSessionComplete(FName SessionName, EOnJoinSessionCompleteResult::Type Result);

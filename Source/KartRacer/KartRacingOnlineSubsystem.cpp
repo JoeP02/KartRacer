@@ -24,9 +24,9 @@ void UKartRacingOnlineSubsystem::Initialize(FSubsystemCollectionBase& Collection
 	}
 }
 
-void UKartRacingOnlineSubsystem::Login()
+void UKartRacingOnlineSubsystem::PortalLogin()
 {
-	Identity->OnLoginCompleteDelegates->AddUObject(this, &UKartRacingOnlineSubsystem::OnLoginCompletes);
+	Identity->OnLoginCompleteDelegates->AddUObject(this, &UKartRacingOnlineSubsystem::OnPortalLoginCompletes);
 	
 	FOnlineAccountCredentials AccountCredentials;
 	AccountCredentials.Type = "AccountPortal";
@@ -34,6 +34,24 @@ void UKartRacingOnlineSubsystem::Login()
 	AccountCredentials.Token = " ";
 	
 	Identity->Login(0, AccountCredentials);
+}
+
+void UKartRacingOnlineSubsystem::PersistantLogin()
+{
+	Identity->OnLoginCompleteDelegates->AddUObject(this, &UKartRacingOnlineSubsystem::OnPersistantLoginCompletes);
+	
+	FOnlineAccountCredentials AccountCredentials;
+	AccountCredentials.Type = "persistentauth";
+	AccountCredentials.Id = " ";
+	AccountCredentials.Token = " ";
+	
+	Identity->Login(0, AccountCredentials);
+}
+
+void UKartRacingOnlineSubsystem::Logout()
+{
+	Identity->OnLogoutCompleteDelegates->AddUObject(this, &UKartRacingOnlineSubsystem::OnLogoutCompletes);
+	Identity->Logout(0);
 }
 
 FString UKartRacingOnlineSubsystem::GetPlayerUsername()
@@ -98,7 +116,7 @@ void UKartRacingOnlineSubsystem::JoinSession(FOnlineSessionSearchResult& Session
 	SessionsPtr->JoinSession(0, NAME_GameSession, SessionToJoin);
 }
 
-void UKartRacingOnlineSubsystem::OnLoginCompletes(int32 LocalUserNum, bool bWasSuccessful, const FUniqueNetId& UserId,
+void UKartRacingOnlineSubsystem::OnPortalLoginCompletes(int32 LocalUserNum, bool bWasSuccessful, const FUniqueNetId& UserId,
                                                   const FString& Error)
 {
 	if (bWasSuccessful)
@@ -111,6 +129,30 @@ void UKartRacingOnlineSubsystem::OnLoginCompletes(int32 LocalUserNum, bool bWasS
 	
 	Identity->ClearOnLoginCompleteDelegates(LocalUserNum, this);
 }
+
+void UKartRacingOnlineSubsystem::OnPersistantLoginCompletes(int32 LocalUserNum, bool bWasSuccessful, const FUniqueNetId& UserId,
+												  const FString& Error)
+{
+	if (!bWasSuccessful)
+	{
+		PortalLogin();
+	}
+	else
+	{
+		OnKartLoginCompleted.Broadcast(LocalUserNum, bWasSuccessful, Error);
+	
+		Identity->ClearOnLoginCompleteDelegates(LocalUserNum, this);
+	}
+}
+
+void UKartRacingOnlineSubsystem::OnLogoutCompletes(int32 LocalUserNum, bool bWasSuccessful)
+{
+	if (bWasSuccessful)
+	{
+		GetWorld()->GetFirstPlayerController()->ClientTravel("/Game/Maps/GameInit", TRAVEL_Absolute);
+	}
+}
+
 
 void UKartRacingOnlineSubsystem::OnCreateSessionComplete(FName SessionName, bool bWasSuccessful)
 {
@@ -155,10 +197,7 @@ void UKartRacingOnlineSubsystem::OnJoinSessionComplete(FName SessionName, EOnJoi
 
 void UKartRacingOnlineSubsystem::OnLeaveSessionComplete(FName SessionName, bool bWasSuccessful)
 {
-	if (bWasSuccessful)
-	{
 		GEngine->AddOnScreenDebugMessage(0, 5.f, FColor::Cyan, "Left Session");
 	
 		GetWorld()->GetFirstPlayerController()->ClientTravel("/Game/Maps/MainMenu", TRAVEL_Absolute);
-	}
 }
