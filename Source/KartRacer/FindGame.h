@@ -17,6 +17,8 @@ class KARTRACER_API UFindGame : public UUserWidget
 
 public:
 	UFindGame(const FObjectInitializer& Object);
+
+	// virtual void NativeConstruct() override;
 	
 	UPROPERTY(meta=(BindWidget)) UScrollBox* SessionScrollBox;
 

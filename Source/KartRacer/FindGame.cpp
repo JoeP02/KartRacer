@@ -19,6 +19,8 @@ void UFindGame::RefreshServerList()
 	UGameInstance* GameInstance = GetGameInstance();
 	UKartRacingOnlineSubsystem* KartRacingOnlineSubsystem = GameInstance->GetSubsystem<UKartRacingOnlineSubsystem>();
 
+	SessionScrollBox->ClearChildren();
+
 	for (FOnlineSessionSearchResult SearchResult : KartRacingOnlineSubsystem->SearchSettings->SearchResults)
 	{
 		UFindGame_Item* SessionItem = CreateWidget<UFindGame_Item>(this, ServerRowClass);
